@@ -14,43 +14,21 @@ document.onreadystatechange = function () {
 };
 
 function onActivate() {
-  getCanvas();
-
   client.interface
     .trigger('showModal', {
-      title: 'Draw it',
+      title: 'Flowchart',
       template: 'index.html',
     })
     .then(function (data) {
-      // data - success message
-      alert(`success `);
-      getCanvas();
+      console.log(data);
     })
     .catch(function (error) {
-      // error - error object
-      alert(`success `);
-
-      alert(`error: ${error.message}`);
+      console.log(error.message);
     });
 }
 
 function handleErr(err = 'None') {
   console.error(`Error occured. Details:`, err);
-}
-
-function saveCanvas() {
-  var JSONcanvas = JSON.stringify(canvas);
-  client.db.set('canvas', { jc: JSONcanvas }).then(
-    function (data) {
-      alert('suc');
-      // success operation
-      // "data" value is { "Created" : true }
-    },
-    function (error) {
-      // failure operation
-      console.log(error);
-    }
-  );
 }
 
 var canvas = (this.__canvas = new fabric.Canvas('canvas-box'));
@@ -61,7 +39,7 @@ var img = document.createElement('img');
 img.src = deleteIcon;
 
 fabric.Object.prototype.transparentCorners = false;
-fabric.Object.prototype.cornerColor = 'blue';
+fabric.Object.prototype.cornerColor = 'hsl(217, 0%, 72%)';
 fabric.Object.prototype.cornerStyle = 'circle';
 
 fabric.Object.prototype.controls.deleteControl = new fabric.Control({
@@ -90,94 +68,7 @@ function renderIcon(ctx, left, top, styleOverride, fabricObject) {
   ctx.restore();
 }
 
-// Double-click event handler
-var fabricDblClick = function (obj, handler) {
-  return function () {
-    if (obj.clicked) handler(obj);
-    else {
-      obj.clicked = true;
-      setTimeout(function () {
-        obj.clicked = false;
-      }, 500);
-    }
-  };
-};
-
-// ungroup objects in group
-var items;
-var ungroup = function (group) {
-  items = group._objects;
-  group._restoreObjectsState();
-  canvas.remove(group);
-  canvas.renderAll();
-  for (var i = 0; i < items.length; i++) {
-    canvas.add(items[i]);
-  }
-  // if you have disabled render on addition
-  canvas.renderAll();
-};
-
-// Re-group when text editing finishes
-var dimensionText = new fabric.IText('Edit Text', {
-  fontFamily: 'Helvetica, sans-serif',
-  fontSize: 16,
-  fontWeight: 600,
-  stroke: '#000',
-  strokeWidth: 0,
-  fill: '#000',
-  originX: 'center',
-  originY: 'center',
-});
-dimensionText.on('editing:exited', function () {
-  for (var i = 0; i < items.length; i++) {
-    canvas.remove(items[i]);
-  }
-  var grp = new fabric.Group(items, {});
-  canvas.add(grp);
-  grp.on(
-    'mousedown',
-    fabricDblClick(grp, function (obj) {
-      ungroup(grp);
-      canvas.setActiveObject(dimensionText);
-      dimensionText.enterEditing();
-      dimensionText.selectAll();
-    })
-  );
-});
-
-function addTextBox() {
-  var rectangle = new fabric.Rect({
-    fill: 'hsl(192, 96%, 70%)',
-    width: 160,
-    height: 60,
-    borderWidth: 5,
-    borderRadius: 50,
-    objectCaching: false,
-    originX: 'center',
-    originY: 'center',
-  });
-
-  var dimension_group = new fabric.Group([rectangle, dimensionText], {
-    left: 80,
-    top: 40,
-  });
-  canvas.add(dimension_group);
-  canvas.setActiveObject(dimension_group);
-
-  dimension_group.on(
-    'mousedown',
-    fabricDblClick(dimension_group, function (obj) {
-      ungroup(dimension_group);
-      canvas.setActiveObject(dimensionText);
-      dimensionText.enterEditing();
-      dimensionText.selectAll();
-      canvas.renderAll();
-    })
-  );
-}
-addTextBox();
-
-function addTextBox2() {
+function addText() {
   var dimensionText = new fabric.IText('Edit Text', {
     fontFamily: 'Helvetica, sans-serif',
     fontSize: 18,
@@ -185,8 +76,7 @@ function addTextBox2() {
     stroke: '#000',
     strokeWidth: 0,
     fill: '#000',
-    backgroundColor: 'hsl(192, 96%, 70%)',
-    padding: 8,
+    padding: 6,
     top: 50,
     left: 50,
   });
@@ -195,29 +85,80 @@ function addTextBox2() {
   canvas.setActiveObject(dimensionText);
 }
 
-addTextBox2();
+function addRectangle() {
+  let rect = new fabric.Rect({
+    fill: '#fff',
+    width: 150,
+    height: 50,
+    stroke: 'black',
+    strokeWidth: 1,
+    left: 50,
+    top: 50,
+  });
 
-function loadCanvas(c) {
-  alert('loadfromcan', c);
-  canvas.loadFromJSON(c);
+  canvas.add(rect).setActiveObject(rect);
 }
 
-function getCanvas() {
-  var JSONCanvas;
-  client.db.get('canvas').then(
-    function (data) {
-      alert('success db' + data.jc);
-      JSONCanvas = data.jc;
-      const canvas = new fabric.Canvas('canvas-box2');
+function addCircle() {
+  let circle = new fabric.Circle({
+    fill: '#fff',
+    radius: 50,
+    stroke: 'black',
+    strokeWidth: 1,
+    borderWidth: 5,
+    borderRadius: 50,
+    objectCaching: false,
+    left: 50,
+    top: 50,
+  });
 
-      canvas.loadFromJSON(data.jc);
+  canvas.add(circle);
+  canvas.setActiveObject(circle);
+}
 
-      alert(data.jc);
-    },
-    function (error) {
-      // failure operation
-      console.log(error);
-      alert('error');
-    }
-  );
+function addTriangle() {
+  let circle = new fabric.Triangle({
+    fill: '#fff',
+    stroke: 'black',
+    strokeWidth: 1,
+    radius: 50,
+    height: 100,
+    width: 100,
+    borderWidth: 5,
+    borderRadius: 50,
+    objectCaching: false,
+    left: 50,
+    top: 50,
+  });
+
+  canvas.add(circle);
+  canvas.setActiveObject(circle);
+}
+
+function addArrow() {
+  var triangle = new fabric.Triangle({
+    width: 20,
+    height: 15,
+    fill: 'black',
+    left: 235,
+    top: 60,
+    angle: 90,
+  });
+
+  var line = new fabric.Line([50, 100, 200, 100], {
+    left: 75,
+    top: 70,
+    stroke: 'black',
+    strokeWidth: 1,
+  });
+
+  var objs = [line, triangle];
+
+  var alltogetherObj = new fabric.Group(objs, {
+    padding: 20,
+    angle: -45,
+    left: 50,
+    top: 150,
+  });
+  canvas.add(alltogetherObj).setActiveObject(alltogetherObj);
 }
