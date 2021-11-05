@@ -18,8 +18,10 @@ html {
   padding: 1rem;
 }
 
-img {
-  max-width: 50px;
+.canvas-box {
+  margin: 1rem;
+  border: 0.01rem solid #000;
+  border-radius: 0.24rem;
 }
 
 .controls {

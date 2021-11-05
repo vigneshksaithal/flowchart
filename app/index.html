@@ -18,28 +18,38 @@
       integrity="sha256-ci3ufCFiOsHDyOz3khAAeNZdBAxy/NqCeHZ1M6kyiP4="
       crossorigin="anonymous"
     ></script>
+    <!-- jsdelivr icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.0/font/bootstrap-icons.css"
+    />
   </head>
-
   <body>
     <section class="app-body">
       <div class="controls">
-        <p>
-          <fw-button id="add" color="secondary" onclick="Add()"
-            >Add a rectangle</fw-button
-          >
-          <fw-button id="add" color="secondary" onclick="addTextBox2()"
-            >Add Textbox</fw-button
-          >
-        </p>
+        <fw-button size="icon" color="secondary" onclick="addText()">
+          <i class="bi bi-fonts"></i>
+        </fw-button>
+        <fw-button size="icon" color="secondary" onclick="addRectangle()">
+          <i class="bi bi-square"></i>
+        </fw-button>
+        <fw-button size="icon" color="secondary" onclick="addCircle()">
+          <i class="bi bi-circle"></i>
+        </fw-button>
+        <fw-button size="icon" color="secondary" onclick="addTriangle()">
+          <i class="bi bi-triangle"></i>
+        </fw-button>
+        <fw-button size="icon" color="secondary" onclick="addArrow()">
+          <i class="bi bi-arrow-right"></i>
+        </fw-button>
       </div>
       <canvas
         id="canvas-box"
+        class="canvas-box"
         width="550"
         height="550"
-        style="border: 1px solid #ccc"
       ></canvas>
     </section>
   </body>
-
   <script src="scripts/app.js"></script>
 </html>
